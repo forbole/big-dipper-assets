@@ -1,0 +1,31 @@
+name: Sync to S3
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - './assets/previews/*'
+      - './assets/banners/*'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-pip
+        pip3 install s3cmd
+    - name: Set up S3cmd cli tool
+      uses: s3-actions/s3cmd@v1.4.0
+      with:
+        provider: linode
+        region: 'eu-central-1'
+        access_key: ${{ secrets.S3_ACCESS_KEY }}
+        secret_key: ${{ secrets.S3_SECRET_KEY }}
+    - name: Interact with object storage
+      run: |
+        s3cmd sync --recursive --acl-public ./assets/previews s3://s3.bigdipper.live/ --delete-removed
+        s3cmd sync --recursive --acl-public ./assets/banners s3://s3.bigdipper.live/ --delete-removed
