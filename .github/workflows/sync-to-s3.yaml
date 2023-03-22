@@ -4,8 +4,8 @@ on:
     branches:
       - main
     paths:
-      - './assets/previews/*'
-      - './assets/banners/*'
+      - 'assets/previews/*'
+      - 'assets/banners/*'
 
 jobs:
   sync:
